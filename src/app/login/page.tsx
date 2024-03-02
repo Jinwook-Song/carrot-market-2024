@@ -7,7 +7,7 @@ import { useFormState } from 'react-dom';
 import { handleForm } from './actions';
 
 export default function LogIn() {
-  const [state, action] = useFormState(handleForm, null);
+  const [state, dispatch] = useFormState(handleForm, null);
 
   return (
     <main className='flex flex-col gap-10 px-6 py-8'>
@@ -15,13 +15,13 @@ export default function LogIn() {
         <h1 className='text-2xl'>안녕하세요!</h1>
         <h2 className='text-xl'>Log in with email and password</h2>
       </section>
-      <form action={action} className='flex flex-col gap-3'>
+      <form action={dispatch} className='flex flex-col gap-3'>
         <FormInput
           name='email'
           type='email'
           placeholder='Email'
           required
-          errors={state?.errors ?? []}
+          errors={state?.errors}
         />
         {state?.sms && (
           <FormInput
@@ -29,7 +29,7 @@ export default function LogIn() {
             type='password'
             placeholder='Password'
             required
-            errors={state?.errors ?? []}
+            errors={state?.errors}
           />
         )}
 
