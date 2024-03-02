@@ -10,6 +10,6 @@
 
 @layer components {
   .primary-btn {
-    @apply w-full bg-orange-500 text-white font-medium rounded-md text-center hover:brightness-105 transition;
+    @apply w-full bg-orange-500 text-white font-medium rounded-md text-center hover:brightness-105 transition outline-white disabled:opacity-30 disabled:cursor-not-allowed disabled:animate-pulse;
   }
 }
