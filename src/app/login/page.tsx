@@ -4,10 +4,12 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import SocialLogin from '@/components/SocialLogin';
 import { useFormState } from 'react-dom';
-import { handleForm } from './actions';
+import { login } from './actions';
+import { PASSWORD_MIN_LENGTH } from '@/libs/constants';
+import { stat } from 'fs';
 
 export default function LogIn() {
-  const [state, dispatch] = useFormState(handleForm, null);
+  const [state, dispatch] = useFormState(login, null);
 
   return (
     <main className='flex flex-col gap-10 px-6 py-8'>
@@ -21,18 +23,16 @@ export default function LogIn() {
           type='email'
           placeholder='Email'
           required
-          errors={state?.errors}
+          errors={state?.fieldErrors.email}
         />
-        {state?.sms && (
-          <Input
-            name='password'
-            type='password'
-            placeholder='Password'
-            required
-            errors={state?.errors}
-          />
-        )}
-
+        <Input
+          name='password'
+          type='password'
+          placeholder='Password'
+          required
+          minLength={PASSWORD_MIN_LENGTH}
+          errors={state?.fieldErrors.password}
+        />
         <Button text='Sign In' />
       </form>
 

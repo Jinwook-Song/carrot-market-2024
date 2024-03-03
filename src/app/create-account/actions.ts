@@ -1,5 +1,10 @@
 'use server';
 
+import {
+  ERROR_MESSAGE,
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_REGEX,
+} from '@/libs/constants';
 import { z } from 'zod';
 
 interface CheckConfirmPasswordProps {
@@ -7,9 +12,6 @@ interface CheckConfirmPasswordProps {
   confirmPassword: string;
 }
 
-const passwordRegex = new RegExp(
-  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).+$/
-);
 const checkUsername = (username: string) => username.includes('carrot');
 const checkConfirmPassword = ({
   password,
@@ -20,8 +22,6 @@ const formSchema = z
   .object({
     username: z
       .string()
-      .min(3, 'Too short!')
-      .max(10, 'Too long!')
       .toLowerCase()
       .trim()
       .transform((username) => `--${username}--`)
@@ -29,12 +29,9 @@ const formSchema = z
     email: z.string().email().toLowerCase(),
     password: z
       .string()
-      .min(6)
-      .regex(
-        passwordRegex,
-        'A password must be have lowercase, UPPERCASE, a number and special characters.'
-      ),
-    confirmPassword: z.string().min(6),
+      .min(PASSWORD_MIN_LENGTH)
+      .regex(PASSWORD_REGEX, ERROR_MESSAGE.password_regex),
+    confirmPassword: z.string().min(PASSWORD_MIN_LENGTH),
   })
   .refine(checkConfirmPassword, {
     message: 'Both password should be the same',
@@ -51,7 +48,6 @@ export async function createAccount(prevState: any, formData: FormData) {
 
   const result = formSchema.safeParse(data);
   if (!result.success) {
-    console.log(result.error.flatten());
     return result.error.flatten();
   } else {
     console.log(result.data);
