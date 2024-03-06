@@ -1,10 +1,19 @@
-import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import getSession from './libs/session';
 
+const publicUrls = new Set(['/', '/login', '/sms', '/create-account']);
+
 export async function middleware(request: NextRequest) {
-  const session = await getSession();
-  console.log('✅', session);
+  const isPublicPath = publicUrls.has(request.nextUrl.pathname);
+  const isLoggedIn = Boolean((await getSession()).id);
+
+  if (!isLoggedIn && !isPublicPath) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
+
+  if (isLoggedIn && isPublicPath) {
+    return NextResponse.redirect(new URL('/home', request.url));
+  }
 }
 
 export const config = {
