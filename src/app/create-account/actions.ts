@@ -1,6 +1,6 @@
 'use server';
 
-import bcrypt from 'bcrypt';
+import { redirect } from 'next/navigation';
 
 import {
   ERROR_MESSAGE,
@@ -9,7 +9,9 @@ import {
 } from '@/libs/constants';
 import db from '@/libs/db';
 import { z } from 'zod';
+import getSession from '@/libs/session';
 
+import bcrypt from 'bcrypt';
 interface CheckConfirmPasswordProps {
   password: string;
   confirmPassword: string;
@@ -85,5 +87,10 @@ export async function createAccount(prevState: any, formData: FormData) {
       },
       select: { id: true },
     });
+
+    const session = await getSession();
+    session.id = user.id;
+    await session.save();
+    redirect('/');
   }
 }
