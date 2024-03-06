@@ -40,25 +40,47 @@ const checkConfirmPassword = ({
 
 const formSchema = z
   .object({
-    username: z
-      .string()
-      .toLowerCase()
-      .trim()
-      // .transform((username) => `--${username}--`)
-      .refine(checkUsernameUnique, 'This username is already in use.'),
-    email: z
-      .string()
-      .email()
-      .toLowerCase()
-      .refine(
-        checkEmailUnique,
-        'There is an account already registered with this email.'
-      ),
-    password: z
-      .string()
-      .min(PASSWORD_MIN_LENGTH)
-      .regex(PASSWORD_REGEX, ERROR_MESSAGE.password_regex),
+    username: z.string().toLowerCase().trim(),
+    // .transform((username) => `--${username}--`)
+    // .refine(checkUsernameUnique, 'This username is already in use.'),
+    email: z.string().email().toLowerCase(),
+    // .refine(
+    //   checkEmailUnique,
+    //   'There is an account already registered with this email.'
+    // ),
+    password: z.string().min(PASSWORD_MIN_LENGTH),
+    // .regex(PASSWORD_REGEX, ERROR_MESSAGE.password_regex),
     confirmPassword: z.string().min(PASSWORD_MIN_LENGTH),
+  })
+  .superRefine(async ({ username }, ctx) => {
+    const user = await db.user.findUnique({
+      where: { username },
+      select: { id: true },
+    });
+    if (user) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'This username is already in use.',
+        path: ['username'],
+        fatal: true,
+      });
+      return z.NEVER;
+    }
+  })
+  .superRefine(async ({ email }, ctx) => {
+    const user = await db.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
+    if (user) {
+      ctx.addIssue({
+        code: 'custom',
+        message: 'There is an account already registered with this email.',
+        path: ['email'],
+        fatal: true,
+      });
+      return z.NEVER;
+    }
   })
   .refine(checkConfirmPassword, {
     message: 'Both password should be the same',
