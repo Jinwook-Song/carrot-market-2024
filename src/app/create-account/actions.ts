@@ -5,6 +5,7 @@ import {
   PASSWORD_MIN_LENGTH,
   PASSWORD_REGEX,
 } from '@/libs/constants';
+import db from '@/libs/db';
 import { z } from 'zod';
 
 interface CheckConfirmPasswordProps {
@@ -12,7 +13,22 @@ interface CheckConfirmPasswordProps {
   confirmPassword: string;
 }
 
-const checkUsername = (username: string) => username.includes('carrot');
+const checkUsernameUnique = async (username: string) => {
+  const user = await db.user.findUnique({
+    where: { username },
+    select: { id: true },
+  });
+  return !Boolean(user);
+};
+
+const checkEmailUnique = async (email: string) => {
+  const user = await db.user.findUnique({
+    where: { email },
+    select: { id: true },
+  });
+  return !Boolean(user);
+};
+
 const checkConfirmPassword = ({
   password,
   confirmPassword,
@@ -24,9 +40,16 @@ const formSchema = z
       .string()
       .toLowerCase()
       .trim()
-      .transform((username) => `--${username}--`)
-      .refine(checkUsername, 'custom error'),
-    email: z.string().email().toLowerCase(),
+      // .transform((username) => `--${username}--`)
+      .refine(checkUsernameUnique, 'This username is already in use.'),
+    email: z
+      .string()
+      .email()
+      .toLowerCase()
+      .refine(
+        checkEmailUnique,
+        'There is an account already registered with this email.'
+      ),
     password: z
       .string()
       .min(PASSWORD_MIN_LENGTH)
@@ -46,10 +69,13 @@ export async function createAccount(prevState: any, formData: FormData) {
     confirmPassword: formData.get('confirmPassword'),
   };
 
-  const result = formSchema.safeParse(data);
+  const result = await formSchema.safeParseAsync(data);
   if (!result.success) {
     return result.error.flatten();
   } else {
-    console.log(result.data);
+    // hash password
+    // save the user
+    // authenticate the user
+    // redirect
   }
 }
