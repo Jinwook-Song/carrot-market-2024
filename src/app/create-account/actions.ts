@@ -1,7 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
-
 import {
   ERROR_MESSAGE,
   PASSWORD_MIN_LENGTH,
@@ -9,7 +7,7 @@ import {
 } from '@/libs/constants';
 import db from '@/libs/db';
 import { z } from 'zod';
-import getSession from '@/libs/session';
+import { logInUser } from '@/libs/session';
 
 import bcrypt from 'bcrypt';
 interface CheckConfirmPasswordProps {
@@ -110,9 +108,6 @@ export async function createAccount(prevState: any, formData: FormData) {
       select: { id: true },
     });
 
-    const session = await getSession();
-    session.id = user.id;
-    await session.save();
-    redirect('/profile');
+    await logInUser(user.id);
   }
 }
