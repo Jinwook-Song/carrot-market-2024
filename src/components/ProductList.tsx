@@ -18,7 +18,7 @@ export default function ProductList({
   createdAt,
 }: ProductListProps) {
   return (
-    <Link href={`products/${id}}`} className='flex gap-5'>
+    <Link href={`/products/${id}`} className='flex gap-5'>
       <div className='relative size-28 rounded-md overflow-hidden'>
         <Image src={photo} alt={title} fill />
       </div>
