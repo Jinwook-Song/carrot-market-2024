@@ -12,7 +12,7 @@ async function getIsOwner(userId: number) {
 }
 
 async function getProudct(id: number) {
-  await new Promise((resolve) => setTimeout(resolve, 2000));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   const product = await db.product.findUnique({
     where: { id },
     include: {
@@ -48,7 +48,12 @@ export default async function ProductDetail({
   return (
     <div>
       <div className='relative aspect-square max-h-[60vh] mx-auto'>
-        <Image fill src={product.photo} alt={product.title} />
+        <Image
+          fill
+          src={product.photo}
+          alt={product.title}
+          className='object-cover'
+        />
       </div>
       <div className='p-5 flex items-center gap-3 border-b border-neutral-700'>
         <Avatar username={product.user.username} avatar={product.user.avatar} />
