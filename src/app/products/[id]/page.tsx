@@ -1,7 +1,7 @@
+import Avatar from '@/components/Avatar';
 import db from '@/libs/db';
 import getSession from '@/libs/session';
 import { formatPrice } from '@/libs/utils';
-import { UserIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
@@ -51,18 +51,7 @@ export default async function ProductDetail({
         <Image fill src={product.photo} alt={product.title} />
       </div>
       <div className='p-5 flex items-center gap-3 border-b border-neutral-700'>
-        <div className='size-10 rounded-full'>
-          {product.user.avatar !== null ? (
-            <Image
-              src={product.user.avatar}
-              width={40}
-              height={40}
-              alt={product.user.username}
-            />
-          ) : (
-            <UserIcon />
-          )}
-        </div>
+        <Avatar username={product.user.username} avatar={product.user.avatar} />
         <div>
           <h3>{product.user.username}</h3>
         </div>
