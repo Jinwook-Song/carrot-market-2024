@@ -4,13 +4,15 @@ import Button from '@/components/Button';
 import Input from '@/components/Input';
 import { PhotoIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
-import { uploadProduct } from './actions';
+import { getUploadUrl, uploadProduct } from './actions';
 import { useFormState } from 'react-dom';
 
 export default function AddProduct() {
   const [preview, setPreview] = useState('');
+  const [uploadUrl, setUploadUrl] = useState('');
+  const [photoId, setPhotoId] = useState('');
 
-  const onImageChange = ({
+  const onImageChange = async ({
     target: { files },
   }: React.ChangeEvent<HTMLInputElement>) => {
     if (!files) return;
@@ -30,10 +32,35 @@ export default function AddProduct() {
     }
 
     const url = URL.createObjectURL(file);
+
     setPreview(url);
+    const { success, result } = await getUploadUrl();
+    if (success) {
+      const { id, uploadURL } = result;
+      setUploadUrl(uploadURL);
+      setPhotoId(id);
+    }
   };
 
-  const [state, action] = useFormState(uploadProduct, null);
+  const interceptAction = async (_: any, formData: FormData) => {
+    const file = formData.get('photo');
+    if (!file) return;
+
+    const cloudflareForm = new FormData();
+    cloudflareForm.append('file', file);
+    const response = await fetch(uploadUrl, {
+      method: 'POST',
+      body: cloudflareForm,
+    });
+
+    if (response.status !== 200) return;
+
+    const photoUrl = `https://imagedelivery.net/0yNBnB1j4b45loBWzdicYQ/${photoId}`;
+    formData.set('photo', photoUrl);
+    return uploadProduct(_, formData);
+  };
+
+  const [state, action] = useFormState(interceptAction, null);
 
   return (
     <div>
