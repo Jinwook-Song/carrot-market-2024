@@ -21,7 +21,7 @@ export default function ProductItem({
     <Link href={`/products/${id}`} className='flex gap-5'>
       <div className='relative size-28 rounded-md overflow-hidden'>
         <Image
-          src={`${photo}/avatar`}
+          src={`${photo}/width=100,height=100`}
           alt={title}
           fill
           className='object-cover'
