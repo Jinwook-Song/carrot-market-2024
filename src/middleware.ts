@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (isLoggedIn && isPublicPath) {
-    return NextResponse.redirect(new URL('/profile', request.url));
+    return NextResponse.redirect(new URL('/home', request.url));
   }
 }
 

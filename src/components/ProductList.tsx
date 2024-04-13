@@ -2,7 +2,7 @@
 
 import ProductItem from './ProductItem';
 import { useEffect, useRef, useState } from 'react';
-import { SimpleProducts, fetchProducts } from '@/app/(tabs)/products/actions';
+import { SimpleProducts, fetchProducts } from '@/app/(tabs)/home/actions';
 
 interface ProductListProps {
   initialProducts: SimpleProducts;
