@@ -61,7 +61,7 @@ export default function ProductList({ initialProducts }: ProductListProps) {
       {products.map((product) => (
         <ProductItem key={product.id} {...product} />
       ))}
-      {!isLastPage && (
+      {/* {!isLastPage && (
         <div
           style={{
             marginTop: `${(page + 1) * 300}vh`,
@@ -75,7 +75,7 @@ export default function ProductList({ initialProducts }: ProductListProps) {
             {isLoading ? 'Loading...' : 'Load more'}
           </span>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
