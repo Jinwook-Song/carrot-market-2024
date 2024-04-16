@@ -10,7 +10,6 @@ interface FetchProducts {
 }
 
 export async function fetchProducts({ page = 0 }: FetchProducts) {
-  console.log('hit!!');
   const products = await db.product.findMany({
     select: {
       id: true,

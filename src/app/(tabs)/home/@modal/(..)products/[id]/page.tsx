@@ -1,9 +1,10 @@
 'use client';
 
 import { PhotoIcon, XMarkIcon } from '@heroicons/react/24/solid';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 export default function Modal({ params }: { params: { id: string } }) {
+  if (isNaN(Number(params.id))) window.location.reload();
   const router = useRouter();
 
   const onBackgroundTap = (event: React.MouseEvent) => {

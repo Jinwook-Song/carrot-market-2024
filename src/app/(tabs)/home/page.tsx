@@ -14,6 +14,9 @@ const getCachedProducts = nextCache(
   { revalidate: 60 }
 );
 
+// export const dynamic = "force-dynamic";
+export const revalidate = 60; // 60초 이후에 revalidate
+
 export default async function Products() {
   // const products = await fetchProducts({ page: 0 });
   const products = await getCachedProducts(0);
