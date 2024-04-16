@@ -1,6 +1,6 @@
 import Avatar from '@/components/Avatar';
+import DeleteButton from '@/components/DeleteButton';
 import db from '@/libs/db';
-import getSession from '@/libs/session';
 import { formatPrice } from '@/libs/utils';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,11 +11,6 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   return {
     title: product?.title,
   };
-}
-
-async function getIsOwner(userId: number) {
-  const session = await getSession();
-  return session.id === userId;
 }
 
 async function getProudct(id: number) {
@@ -45,7 +40,6 @@ export default async function ProductDetail({
   const product = await getProudct(id);
   if (!product) return notFound();
 
-  const isOwner = await getIsOwner(product.userId);
   const deleteProduct = async () => {
     'use server';
     await db.product.delete({ where: { id } });
@@ -76,13 +70,7 @@ export default async function ProductDetail({
         <span className='font-semibold text-xl'>
           {formatPrice(product.price)}
         </span>
-        {isOwner && (
-          <form action={deleteProduct}>
-            <button className='bg-red-500 px-5 py-2.5 rounded-md text-white font-semibold'>
-              Delete
-            </button>
-          </form>
-        )}
+        <DeleteButton ownerId={product.userId} deleteProduct={deleteProduct} />
         <Link
           className='bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold'
           href={``}
@@ -92,4 +80,11 @@ export default async function ProductDetail({
       </div>
     </div>
   );
+}
+
+export async function generateStaticParams() {
+  const products = await db.product.findMany({
+    select: { id: true },
+  });
+  return products.map((product) => ({ id: String(product.id) }));
 }
