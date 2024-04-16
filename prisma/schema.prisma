@@ -19,8 +19,11 @@ model User {
   password String?
   avatar   String?
 
-  SMSToken SMSToken[]
-  Product  Product[]
+  tokens   SMSToken[]
+  products Product[]
+  posts    Post[]
+  comments Comment[]
+  likes    Like[]
 }
 
 model SMSToken {
@@ -46,4 +49,44 @@ model Product {
 
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title       String
+  description String?
+  views       Int     @default(0)
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId   Int
+  comments Comment[]
+  likes    Like[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payload String
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+}
+
+model Like {
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+
+  @@id(name: "id", [userId, postId]) // (composite id) post를 like한 user는 고유하다
 }
