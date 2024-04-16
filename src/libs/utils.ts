@@ -16,3 +16,7 @@ export function formatTimeAgo(date: string | Date): string {
   const formatter = new Intl.RelativeTimeFormat('ko');
   return formatter.format(diff, 'days');
 }
+
+export async function sleep(ms = 3000) {
+  return await new Promise((resolve) => setTimeout(resolve, ms));
+}
