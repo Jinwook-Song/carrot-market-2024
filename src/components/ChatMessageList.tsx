@@ -1,6 +1,7 @@
 'use client';
 
 import { InitialChatMessages } from '@/app/chats/[id]/page';
+import { saveMessage } from '@/app/chats/actions';
 import { cls, formatTimeAgo } from '@/libs/utils';
 import { ArrowUpCircleIcon } from '@heroicons/react/24/solid';
 import { RealtimeChannel, createClient } from '@supabase/supabase-js';
@@ -12,7 +13,7 @@ const SUPABASE_PUBLIC_KEY =
 const SUPABASE_URL = 'https://hymkssmuhddzmevcfhum.supabase.co';
 
 interface ChatMessageListProps {
-  chatRoomId: String;
+  chatRoomId: string;
   userId: number;
   initialChatMessages: InitialChatMessages;
   username: string;
@@ -37,7 +38,7 @@ export default function ChatMessageList({
     setMessage(value);
   };
 
-  const onSubmit = (event: React.FormEvent) => {
+  const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setMessages((prevMsgs) => [
       ...prevMsgs,
@@ -67,6 +68,7 @@ export default function ChatMessageList({
       },
     });
     setMessage('');
+    await saveMessage({ chatRoomId, payload: message });
   };
 
   useEffect(() => {
