@@ -1,24 +1,29 @@
-import { revalidatePath } from 'next/cache';
+import HackedComponent from '@/components/HackedComponent';
+import {
+  experimental_taintObjectReference,
+  experimental_taintUniqueValue,
+} from 'react';
 
 async function getData() {
-  const data = await fetch(
-    'https://nomad-movies.nomadcoders.workers.dev/movies'
-  );
+  const keys = {
+    apiKey: '123123',
+    secret: 'secret',
+  };
+
+  // 항상 server단에만 남아있어야 하는 데이터
+  // experimental_taintObjectReference('API Keys leaked', keys);
+  experimental_taintUniqueValue('Secret key was exposed', keys, keys.secret);
+  return keys;
 }
 
 export default async function Extras() {
-  await getData();
-  const action = async () => {
-    'use server';
-    revalidatePath('/extras');
-  };
+  const data = await getData();
+
   return (
     <section className='flex flex-col gap-3 py-10'>
       <h1 className='text-5xl font-rubik'>Extras</h1>
       <h2 className='font-spoca'>more things</h2>
-      <form action={action}>
-        <button>revalidate</button>
-      </form>
+      <HackedComponent data={data} />
     </section>
   );
 }
