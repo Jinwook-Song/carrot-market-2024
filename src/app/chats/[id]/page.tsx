@@ -16,7 +16,7 @@ async function getRoom(id: string) {
   if (!room) return notFound();
 
   const session = await getSession();
-  const authorized = room.users.find((user) => user.id === session.id);
+  const authorized = Boolean(room.users.find((user) => user.id === session.id));
   if (!authorized) return notFound();
 
   return room;
@@ -43,13 +43,14 @@ async function getMessages(chatRoomId: string) {
 
 export type InitialChatMessages = Prisma.PromiseReturnType<typeof getMessages>;
 
-export default async function ChatRoom({ params: { id } }: DynamicParamas) {
-  const initialChatMessages = await getMessages(id);
+export default async function ChatRoom({ params }: DynamicParamas) {
+  await getRoom(params.id);
+  const initialChatMessages = await getMessages(params.id);
   const session = await getSession();
 
   return (
     <ChatMessageList
-      chatRoomId={id}
+      chatRoomId={params.id}
       userId={session.id!}
       initialChatMessages={initialChatMessages}
     />
