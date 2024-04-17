@@ -36,7 +36,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  console.log(spoca);
   return (
     <html lang='en' className='bg-neutral-900 text-neutral-50'>
       <body
