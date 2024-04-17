@@ -12,7 +12,7 @@ async function getData() {
 
   // 항상 server단에만 남아있어야 하는 데이터
   // experimental_taintObjectReference('API Keys leaked', keys);
-  experimental_taintUniqueValue('Secret key was exposed', keys, keys.secret);
+  // experimental_taintUniqueValue('Secret key was exposed', keys, keys.secret);
   return keys;
 }
 
