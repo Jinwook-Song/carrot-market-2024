@@ -3,8 +3,8 @@ import DeleteButton from '@/components/DeleteButton';
 import db from '@/libs/db';
 import { formatPrice } from '@/libs/utils';
 import Image from 'next/image';
-import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
+import { createChatRoom } from './actions';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product = await getProudct(Number(params.id));
@@ -46,6 +46,11 @@ export default async function ProductDetail({
     redirect('/');
   };
 
+  const onSubmit = async () => {
+    'use server';
+    await createChatRoom(product.userId);
+  };
+
   return (
     <div>
       <div className='relative aspect-square max-h-[60vh] mx-auto'>
@@ -71,12 +76,11 @@ export default async function ProductDetail({
           {formatPrice(product.price)}
         </span>
         <DeleteButton ownerId={product.userId} deleteProduct={deleteProduct} />
-        <Link
-          className='bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold'
-          href={``}
-        >
-          채팅하기
-        </Link>
+        <form action={onSubmit}>
+          <button className='bg-orange-500 px-5 py-2.5 rounded-md text-white font-semibold'>
+            채팅하기
+          </button>
+        </form>
       </div>
     </div>
   );
