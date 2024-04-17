@@ -1,8 +1,27 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Roboto, Rubik_Scribble } from 'next/font/google';
 import './globals.css';
+import localFont from 'next/font/local';
 
-const inter = Inter({ subsets: ['latin'] });
+// const inter = Inter({ subsets: ['latin'] });
+const roboto = Roboto({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  style: ['normal', 'italic'],
+  variable: '--roboto-text',
+});
+
+const rubik = Rubik_Scribble({
+  subsets: ['latin'],
+  weight: '400',
+  style: 'normal',
+  variable: '--rubik-text',
+});
+
+const spoca = localFont({
+  src: './SpoqaHanSansNeo-Regular.ttf',
+  variable: '--spoca-text',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -17,9 +36,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  console.log(spoca);
   return (
     <html lang='en' className='bg-neutral-900 text-neutral-50'>
-      <body className={`${inter.className} max-w-screen-md mx-auto`}>
+      <body
+        className={`${roboto.variable} ${rubik.variable} ${spoca.variable} max-w-screen-md mx-auto`}
+      >
         {children}
       </body>
     </html>
