@@ -1,3 +1,7 @@
+export function cls(...classNames: string[]) {
+  return classNames.join(' ');
+}
+
 export function formatPrice(price: number, locale = 'ko-KR'): string {
   switch (locale) {
     case 'ko-KR':

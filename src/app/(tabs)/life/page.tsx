@@ -44,7 +44,7 @@ export default async function Life() {
           <p>{post.description}</p>
           <div className='flex items-center justify-between text-sm'>
             <div className='flex gap-4 items-center'>
-              <span>{formatTimeAgo(post.createdAt.toString())}</span>
+              <span>{formatTimeAgo(post.createdAt)}</span>
               <span>·</span>
               <span>조회 {post.views}</span>
             </div>
