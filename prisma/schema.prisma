@@ -27,6 +27,7 @@ model User {
   likes        Like[]
   chatRooms    ChatRoom[]
   chatMessages ChatMessage[]
+  liveStreams  LiveStream[]
 }
 
 model SMSToken {
@@ -114,4 +115,17 @@ model ChatMessage {
   userId     Int
   chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [id], onDelete: Cascade)
   chatRoomId String
+}
+
+model LiveStream {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  title     String
+  streamKey String
+  streamId  String
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
 }
